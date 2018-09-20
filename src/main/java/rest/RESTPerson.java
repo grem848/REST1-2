@@ -3,6 +3,7 @@ package rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import entity.Person;
+import entity.PersonDTO;
 import facade.FacadePerson;
 import java.util.Date;
 import javax.persistence.Persistence;
@@ -10,14 +11,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -52,16 +51,18 @@ public class RESTPerson
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPersonJson(@PathParam("firstName") String firstName, @PathParam("lastName") String lastName)
     {
-        Person person = new Person(firstName, lastName, 0);
+        Person person = new Person();
+        person.setFirstName(firstName);
+        person.setLastName(lastName);
 
-        if (fp.getPerson(person) == null)
+        PersonDTO pdto = fp.getPerson(person);
+
+        if (pdto != null)
         {
-            return Response.status(Response.Status.NOT_FOUND).entity("{\"status\":\"NOT FOUND\"}").build();
+            return Response.ok(gson.toJson(pdto)).build();
         } else
         {
-            String json = gson.toJson(fp.getPerson(person));
-
-            return Response.ok(json).build();
+            return Response.status(Response.Status.NOT_FOUND).entity("{\"status\":\"NOT FOUND\"}").build();
         }
 
     }
