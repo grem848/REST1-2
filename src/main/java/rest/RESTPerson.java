@@ -7,6 +7,7 @@ import entity.PersonDTO;
 import facade.FacadePerson;
 import java.util.Date;
 import javax.persistence.Persistence;
+import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
@@ -19,6 +20,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import restexception.ExceptionError;
 
 @Path("person")
 public class RESTPerson
@@ -26,7 +28,9 @@ public class RESTPerson
 
     @Context
     private UriInfo context;
-
+    @Context
+    private ServletContext servletContext;
+    
     Date date = new Date();
 
     Gson gson;
@@ -119,4 +123,44 @@ public class RESTPerson
         }
     }
 
+    @Path("{firstName}/{lastName}")
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPerson(String json, @PathParam("firstName") String firstName, @PathParam("lastName") String lastName)
+    {
+        Person person = new Person();
+        person.setFirstName(firstName);
+        person.setLastName(lastName);
+
+        PersonDTO pdto = fp.getPerson(person);
+
+        if (pdto != null)
+        {
+            return Response.ok(gson.toJson(pdto)).build();
+        } else
+        {
+            // 0
+            //return Response.status(Response.Status.NOT_ACCEPTABLE).entity("{}").build();
+
+            // 1
+            //throw new WebApplicationException(Response.status(406).entity("{\"message\":\"There is no person\"}").build());
+            //throw new NoPersonException("{\"message\":\"There is no person\"}");
+            // 2
+            try
+            {
+                throw new NumberFormatException("Number must be an integer");
+            } catch (NumberFormatException e)
+            {
+                ExceptionError ee = new ExceptionError(e, 500, servletContext.getInitParameter("debug").equals("true"));
+                String eejson = gson.toJson(ee);
+                return Response.status(500).entity(eejson).build();
+            }
+
+            // 3
+            //throw new RuntimeException("Some runtime exception occured");                       
+        }
+    }
 }
+
+
