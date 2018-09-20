@@ -14,6 +14,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -52,7 +53,7 @@ public class RESTPerson
     public Response getPersonJson(@PathParam("firstName") String firstName, @PathParam("lastName") String lastName)
     {
         Person person = new Person(firstName, lastName, 0);
-        
+
         if (fp.getPerson(person) == null)
         {
             return Response.status(Response.Status.NOT_FOUND).entity("{\"status\":\"NOT FOUND\"}").build();
@@ -68,22 +69,24 @@ public class RESTPerson
     @POST
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addPersonJson(Person person)
+    public Response addPersonJson(String json)
     {
-
-        String jsonBack = gson.toJson(person);
+        Person person = gson.fromJson(json, Person.class);
 
         fp.addPerson(person);
 
-        return Response.ok().entity(jsonBack).build();
+        return Response.ok().entity(json).build();
 
     }
 
     @DELETE
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deletePersonJson(Person person)
+    public Response deletePersonJson(String json)
     {
+        Person person = gson.fromJson(json, Person.class);
+        System.out.println(json);
+        System.out.println(person);
         try
         {
             fp.deletePerson(person);
@@ -97,21 +100,25 @@ public class RESTPerson
 
     }
 
-
-    @Path("{id}")
-    @POST
+    @PUT
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editPersonJson(@PathParam("id") long id, Person person)
+    public Response editPersonJson(String json)
     {
-        person.setId(id);
-        
-        String jsonBack = gson.toJson(person);
+        System.out.println(json);
+        Person person = gson.fromJson(json, Person.class);
+        try
+        {
 
-        fp.editPerson(person);
+            fp.editPerson(person);
 
-        return Response.ok().entity(jsonBack).build();
+            return Response.ok().entity(json).build();
 
+        } catch (Exception e)
+        {
+            System.out.println(e);
+            return Response.status(Response.Status.NOT_FOUND).entity("{\"status\":\"PERSON NOT FOUND\"}").build();
+        }
     }
 
 }

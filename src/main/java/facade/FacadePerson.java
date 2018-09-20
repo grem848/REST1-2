@@ -89,9 +89,8 @@ public class FacadePerson
         try
         {
             em.getTransaction().begin();
-            Query query = em.createQuery("select p from Person p where p.firstName = :firstName and p.lastName = :lastName", Person.class);
-            query.setParameter("firstName", person.getFirstName());
-            query.setParameter("lastName", person.getLastName()); 
+            Query query = em.createQuery("select p from Person p where p.id = :id", Person.class);
+            query.setParameter("id", person.getId());
             Person p = (Person) query.getSingleResult();
             if(p != null)
             {
@@ -113,9 +112,8 @@ public class FacadePerson
         try
         {
             em.getTransaction().begin();
-            Query query = em.createQuery("select p from Person p where p.firstName = :firstName and p.lastName = :lastName", Person.class);
-            query.setParameter("firstName", person.getFirstName());
-            query.setParameter("lastName", person.getLastName()); 
+            Query query = em.createQuery("select p from Person p where p.id = :id", Person.class);
+            query.setParameter("id", person.getId());
             Person p = (Person) query.getSingleResult();
             if(p != null)
             {
@@ -128,6 +126,6 @@ public class FacadePerson
         finally
         {
             em.close();
-        }
+        }  
     }
 }
