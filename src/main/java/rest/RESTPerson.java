@@ -70,7 +70,7 @@ public class RESTPerson
     @POST
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addPersonJson(String json)
+    public Response addPersonJson(String json) // {"firstName":"Rasmus", "lastName":"Friis","phoneNumber":"911"}
     {
         Person person = gson.fromJson(json, Person.class);
 
@@ -83,7 +83,7 @@ public class RESTPerson
     @DELETE
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deletePersonJson(String json)
+    public Response deletePersonJson(String json) // {"id":"4", "firstName":"Rasmus", "lastName":"Friis", "phoneNumber":"911"}
     {
         Person person = gson.fromJson(json, Person.class);
         System.out.println(json);
@@ -104,7 +104,7 @@ public class RESTPerson
     @PUT
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editPersonJson(String json)
+    public Response editPersonJson(String json) // {"id":"1", "firstName":"Heinrich", "lastName":"Wottenburger", "phoneNumber":"123"}
     {
         System.out.println(json);
         Person person = gson.fromJson(json, Person.class);
