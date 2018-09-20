@@ -37,7 +37,6 @@ public class RESTPerson
         gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
-    @Path("getpersons")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPersonsJson()
@@ -47,30 +46,30 @@ public class RESTPerson
         return Response.ok(json).build();
     }
 
-    @Path("getperson")
+    @Path("{firstName}/{lastName}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPersonJson(@QueryParam("id") long id)
+    public Response getPersonJson(@PathParam("firstName") String firstName, @PathParam("lastName") String lastName, @PathParam("phoneNumber") int phone)
     {
-        if (fp.getPerson(id) == null)
+        Person person = new Person(firstName, lastName, phone);
+        
+        if (fp.getPerson(person) == null)
         {
             return Response.status(Response.Status.NOT_FOUND).entity("{\"status\":\"NOT FOUND\"}").build();
         } else
         {
-            String json = gson.toJson(fp.getPerson(id));
+            String json = gson.toJson(fp.getPerson(person));
 
             return Response.ok(json).build();
         }
 
     }
 
-    @Path("addperson")
     @POST
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addPersonJson(@QueryParam("firstName") String firstName, @QueryParam("lastName") String lastName, @DefaultValue("112") @QueryParam("phoneNumber") int phone)
+    public Response addPersonJson(Person person)
     {
-        Person person = new Person(firstName, lastName, phone);
 
         String jsonBack = gson.toJson(person);
 
@@ -81,17 +80,14 @@ public class RESTPerson
     }
 
     @DELETE
-    @Path("deleteperson")
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deletePersonJson(@QueryParam("id") long id)
+    public Response deletePersonJson(Person person)
     {
-
         try
         {
-            Person p1 = fp.getPerson(id);
-            fp.deletePerson(id);
-            return Response.status(Response.Status.ACCEPTED).entity("{\"status\":\"Deleted User: " + p1.getFirstName() + " " + p1.getLastName() + ", Deletion date: " + date + "\"}").build();
+            fp.deletePerson(person);
+            return Response.status(Response.Status.ACCEPTED).entity("{\"status\":\"Deleted User: " + person.getFirstName() + " " + person.getLastName() + ", Deletion date: " + date + "\"}").build();
 
         } catch (Exception e)
         {
@@ -101,13 +97,13 @@ public class RESTPerson
 
     }
 
-    @Path("editperson/{id}")
+
+    @Path("{id}")
     @POST
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editPersonJson(@PathParam("id") long id, @QueryParam("firstName") String firstName, @QueryParam("lastName") String lastName, @DefaultValue("112") @QueryParam("phoneNumber") int phone)
+    public Response editPersonJson(@PathParam("id") long id, Person person)
     {
-        Person person = new Person(firstName, lastName, phone);
         person.setId(id);
         
         String jsonBack = gson.toJson(person);
