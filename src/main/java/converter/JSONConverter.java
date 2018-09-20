@@ -2,7 +2,6 @@
 package converter;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import entity.Person;
 import java.util.List;
 
@@ -10,22 +9,18 @@ import java.util.List;
 public class JSONConverter
 {
 
-    static Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-    public Person getPersonFromJson(String js)
+    public static Person getPersonFromJson(String json)
     {
-        Person person = gson.fromJson(js, Person.class);
-
-        return person;
+        return new Gson().fromJson(json, Person.class);
     }
-
-    public String getJSONFromPerson(Person p)
+    
+    public static String getJSONFromPerson(Person person)
     {
-        return gson.toJson(p);
-    }
+        return new Gson().toJson(person);
+    }  
 
-    public String getJSONFromPersons(List<Person> persons)
+    public static String getJSONFromPersons(List<Person> persons)
     {
-        return gson.toJson(persons);
-    }
+        return new Gson().toJson(persons);
+    }      
 }

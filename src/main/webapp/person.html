@@ -1,0 +1,88 @@
+
+<html>
+    <head>
+        <title>Persons</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            table, td
+            {
+                border: solid 1px black
+            }
+
+        </style>
+        <script>
+            windows.addEventListener("load", function () {
+                var persons;
+
+                PersonRefresh();
+
+
+                document.getElementById("PersonsAdd").addEventListener("click", function () {
+                    PersonAdd();
+                });
+                
+                document.getElementById("PersonsAdd").addEventListener("click", function () {
+                    PersonsGet();
+                });
+
+            });
+
+            function PersonsRefresh()
+            {
+                var rows = "";
+
+                document.getElementById("rows").innerHTML = "";
+
+                fetch("api/person")
+                        .then(function () {
+                            if (response.status !== 200)
+                            {
+                                return;
+                            }
+
+                            response.json()
+                                    .then(function (json) {
+                                        console.log(json);
+                                        json.forEach(function (person, i) {
+                                            rows += "<tr>";
+                                            rows += "<td>" + person.firstName + "</td>";
+                                            rows += "<td>" + person.lastName + "</td>";
+                                            rows += "<td>" + person.phoneNumber + "</td>";
+                                            rows += '<td><input type="button>" value="DELETE" onclick="PersonDelete(' + i + ')" /></td>';
+                                            rows += "</tr>";
+                                        });
+                                        document.getElementById("rows").innerHTML = rows;
+                                    });
+                        });
+            }
+
+            function PersonsAdd()
+            {
+
+            }
+        </script>
+    </head>
+    <body>
+        <table>
+            <thead>
+                <tr>
+                    <td>firstName</td>
+                    <td>lastName</td>
+                    <td>phoneNumber</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody id="rows">
+
+            </tbody>
+        </table>
+
+        <input type="text" id="PersonFirstName">
+        <input type="text" id="PersonLastName">
+        
+        <input type="button" id="PersonsRefresh" value="PersonsRefresh">
+        <input type="button" id="PersonsAdd" value="PersonsAdd">
+        <input type="button" id="PersonDelete" value="PersonDelete">
+    </body>
+</html>
