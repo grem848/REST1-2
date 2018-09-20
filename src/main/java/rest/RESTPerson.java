@@ -49,9 +49,9 @@ public class RESTPerson
     @Path("{firstName}/{lastName}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPersonJson(@PathParam("firstName") String firstName, @PathParam("lastName") String lastName, @PathParam("phoneNumber") int phone)
+    public Response getPersonJson(@PathParam("firstName") String firstName, @PathParam("lastName") String lastName)
     {
-        Person person = new Person(firstName, lastName, phone);
+        Person person = new Person(firstName, lastName, 0);
         
         if (fp.getPerson(person) == null)
         {
