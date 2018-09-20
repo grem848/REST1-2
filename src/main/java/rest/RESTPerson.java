@@ -86,8 +86,6 @@ public class RESTPerson
     public Response deletePersonJson(String json) // {"id":"4", "firstName":"Rasmus", "lastName":"Friis", "phoneNumber":"911"}
     {
         Person person = gson.fromJson(json, Person.class);
-        System.out.println(json);
-        System.out.println(person);
         try
         {
             fp.deletePerson(person);
@@ -106,7 +104,6 @@ public class RESTPerson
     @Produces(MediaType.APPLICATION_JSON)
     public Response editPersonJson(String json) // {"id":"1", "firstName":"Heinrich", "lastName":"Wottenburger", "phoneNumber":"123"}
     {
-        System.out.println(json);
         Person person = gson.fromJson(json, Person.class);
         try
         {
