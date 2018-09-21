@@ -34,6 +34,7 @@ public class ApplicationConfig extends Application
     {
         resources.add(rest.RESTPerson.class);
         resources.add(rest.Resource.class);
+        resources.add(restexception.RuntimeExceptionMapper.class);
     }
     
 }
