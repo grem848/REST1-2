@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import converter.JSONConverter;
 import entity.Address;
 import entity.Person;
 import entity.User;
@@ -39,12 +40,10 @@ public class Resource
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
     JsonParser jsonParser = new JsonParser();
 
-
     public Resource()
     {
     }
 
-  
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String getJson()
@@ -91,7 +90,6 @@ public class Resource
 
     }
 
-
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -99,44 +97,51 @@ public class Resource
     {
         User user = gson.fromJson(json, User.class);
         System.out.println(user);
-        
+
         String jsonBack = gson.toJson(user);
-        
-        
+
         JsonObject jo1 = new JsonObject();
         jo1.addProperty("street", "First Road 1");
         jo1.addProperty("city", "Berlin");
         Address a = gson.fromJson(jo1, Address.class);
         System.out.println("AddressJson: " + a);
-        
+
         JsonObject jo2 = jsonParser.parse(json).getAsJsonObject();
-        
+
         System.out.println("street: " + jo2.has("street"));
         System.out.println("STREET: " + jo2.has("STREET"));
         System.out.println("streetValue: " + jo2.get("street").getAsString());
-        
+
         JsonArray ja = new JsonArray();
         ja.add(jo1);
         ja.add(jo2);
-        
+
         String jsonString = gson.toJson(ja);
         System.out.println("JSONARRAY: " + jsonString);
-        
+
         ArrayList<Address> addresses = new ArrayList();
         addresses.add(a);
         addresses.add(a);
         String json3 = gson.toJson(addresses);
         System.out.println("ADDRESSES: " + json3);
-        
+
         Person p = new Person("Per", "Hansen", 1234);
         p.addAddress(a);
 //        a.addPerson(p);
         String json4 = gson.toJson(p);
         System.out.println("Bidirectional: " + json4);
-        
+
         //ArrayList<Person> persons = new ArrayList();
-        
-        
+        ArrayList<Person> persons = new ArrayList();
+        persons.add(new Person("John", "Benson", 135));
+        persons.add(new Person("Ben", "Johnson", 531));
+        String jsonPerson = JSONConverter.getJSONFromPerson(persons.get(0));
+        System.out.println("JsonConverterJsonFromPerson: " + jsonPerson);
+        String jsonPersons = JSONConverter.getJSONFromPersons(persons);
+        System.out.println("JsonConverterJsonFromPersons: " + jsonPersons);
+        Person personJson = JSONConverter.getPersonFromJson(jsonPerson);
+        System.out.println("JsonConverterPersonFromJson: " + personJson);
+
         return Response.ok().entity(jsonBack).build();
 //        return Response.ok().entity(user).build();
     }
